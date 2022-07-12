@@ -40,7 +40,7 @@ public class Part07Errors {
 
 	// TODO Return a Flux<User> containing User.SAUL and User.JESSE when an error occurs in the input Flux, else do not change the input Flux.
 	Flux<User> betterCallSaulAndJesseForBogusFlux(Flux<User> flux) {
-		return null;
+		return flux.onErrorResume(e -> Flux.just(User.SAUL, User.JESSE));
 	}
 
 //========================================================================================
@@ -48,7 +48,15 @@ public class Part07Errors {
 	// TODO Implement a method that capitalizes each user of the incoming flux using the
 	// #capitalizeUser method and emits an error containing a GetOutOfHereException error
 	Flux<User> capitalizeMany(Flux<User> flux) {
-		return null;
+		return flux.map(user -> {
+			try {
+				return capitalizeUser(user);
+			}
+			catch (GetOutOfHereException e) {
+				throw Exceptions.propagate(e);
+			}
+		});
+
 	}
 
 	User capitalizeUser(User user) throws GetOutOfHereException {
